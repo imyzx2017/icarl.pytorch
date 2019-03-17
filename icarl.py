@@ -5,6 +5,7 @@ from torch import nn
 
 import resnet
 import utils
+import params
 
 
 class ICarl(nn.Module):
@@ -59,6 +60,7 @@ class ICarl(nn.Module):
         c = 0
 
         for inputs, _ in loader:
+            inputs = inputs.to(params.DEVICE)
             features.append(self._features_extractor(inputs))
             mean += features[-1].sum(0)
             c += features[-1].shape[0]
