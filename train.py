@@ -1,3 +1,5 @@
+import json
+
 from icarl import ICarl
 import params
 from utils import *
@@ -38,12 +40,16 @@ for task in range(0, 100, params.TASK_SIZE):
         task,
         old_logits=old_logits
     )
+    print(stats_per_task[task])
 
     model.reduce_examplars()
     model.build_examplars(train_loader, task, task + params.TASK_SIZE)
 
     acc_per_task = test_all_tasks(model, test_loader, task + params.TASK_SIZE)
+    stats_per_task[task]["acc"] = acc_per_task
     print('Accuracy per task', acc_per_task)
+    with open("stats.json", "w+") as f:
+        json.dump(stats_per_task, f)
 
     if task != 100 - params.TASK_SIZE:
         print("Adding new classes...")
