@@ -50,6 +50,8 @@ def train_task(model, train_loader, task, old_logits=None):
 
         cx = 0
         for inputs, targets in tqdm(train_loader):
+            inputs, targets = inputs.to(params.DEVICE), targets.to(params.DEVICE)
+
             onehot_targets = to_onehot(targets, n_classes=task + params.TASK_SIZE)
 
             logits = model(inputs)
@@ -82,6 +84,8 @@ def _test_task(model, loader):
     c = 0
 
     for inputs, targets in loader:
+        inputs, targets = inputs.to(params.DEVICE), targets.to(params.DEVICE)
+
         preds = model.classify(inputs)
         acc += (preds == targets.numpy()).sum()
         c += len(preds)
@@ -105,6 +109,7 @@ def compute_logits(model, loader):
 
     model.eval()
     for inputs, _ in loader:
+        inputs = inputs.to(params.DEVICE)
         logits.append(model(inputs))
     model.train()
 

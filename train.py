@@ -16,6 +16,7 @@ test_loader = torch.utils.data.DataLoader(
 )
 
 model = ICarl(resnet_type="34", n_classes=params.TASK_SIZE, k=params.K)
+model = model.to(params.DEVICE)
 
 stats_per_task = {}
 old_logits = None
