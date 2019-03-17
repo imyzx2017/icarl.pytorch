@@ -84,14 +84,14 @@ def train_task(model, train_loader, test_loader, task, old_logits=None):
             _clf_loss += clf_loss.item()
             _distil_loss += distil_loss.item()
 
-            prog_bar.set_description(
-                "Epoch: {}; Loss: {}; Clf loss: {}; Distill loss: {}".format(
-                    epoch,
-                    _loss / cx,
-                    _clf_loss / cx,
-                    _distil_loss / cx,
-                )
+        prog_bar.set_description(
+            "Epoch: {}; Loss: {}; Clf loss: {}; Distill loss: {}".format(
+                epoch,
+                _loss / cx,
+                _clf_loss / cx,
+                _distil_loss / cx,
             )
+        )
 
     return stats
 
