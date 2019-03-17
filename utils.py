@@ -23,16 +23,19 @@ def distillation_loss(logits, old_logits):
 
 
 def compute_loss(logits, targets, old_logits=None, new_idx=0):
+    logits, targets = logits.to(params.DEVICE), targets.to(params.DEVICE)
+
     clf_loss = F.binary_cross_entropy_with_logits(logits, targets)
 
     if new_idx > 0:
         assert old_logits is not None
+        old_logits = old_logits.to(params.DEVICE)
         distil_loss = F.binary_cross_entropy_with_logits(
             input=logits[..., :new_idx],
             target=old_logits[..., :new_idx]
         )
     else:
-        distil_loss = torch.zeros(1, requires_grad=False)
+        distil_loss = torch.zeros(1, requires_grad=False).to(params.DEVICE)
 
     return clf_loss, distil_loss
 
