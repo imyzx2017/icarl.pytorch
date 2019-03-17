@@ -40,19 +40,20 @@ def compute_loss(logits, targets, old_logits=None, new_idx=0):
     return clf_loss, distil_loss
 
 
-def train_task(model, train_loader, task, old_logits=None):
+def train_task(model, train_loader, test_loader, task, old_logits=None):
     stats = collections.defaultdict(float)
 
     optimizer = torch.optim.SGD(model.parameters(), lr=2.)
     lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, get_scheduler(params.LR))
 
-    for epoch in range(params.EPOCHS_PER_TASK):
-        print("Epoch {}.".format(epoch))
-
+    prog_bar = tqdm(range(params.EPOCHS_PER_TASK))
+    for epoch in prog_bar:
         lr_scheduler.step()
 
         cx = 0
-        for inputs, targets in tqdm(train_loader):
+        _loss, _clf_loss, _distil_loss = 0., 0., 0.
+
+        for inputs, targets in train_loader:
             inputs, targets = inputs.to(params.DEVICE), targets.to(params.DEVICE)
 
             onehot_targets = to_onehot(targets, n_classes=task + params.TASK_SIZE)
@@ -75,9 +76,22 @@ def train_task(model, train_loader, task, old_logits=None):
             loss.backward()
             optimizer.step()
 
-            stats["classification loss"] += clf_loss.item()
-            stats["distillation loss"] += distil_loss.item()
+            #stats["classification loss"] += clf_loss.item()
+            #stats["distillation loss"] += distil_loss.item()
+
             cx += inputs.shape[0]
+            _loss += loss.item()
+            _clf_loss += clf_loss.item()
+            _distil_loss += distil_loss.item()
+
+            prog_bar.set_description(
+                "Epoch: {}; Loss: {}; Clf loss: {}; Distill loss: {}".format(
+                    epoch,
+                    _loss / cx,
+                    _clf_loss / cx,
+                    _distil_loss / cx,
+                )
+            )
 
     return stats
 

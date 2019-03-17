@@ -37,6 +37,7 @@ for task in range(0, 100, params.TASK_SIZE):
     stats_per_task[task] = train_task(
         model,
         train_loader,
+        test_loader,
         task,
         old_logits=old_logits
     )
