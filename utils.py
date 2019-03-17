@@ -87,9 +87,9 @@ def train_task(model, train_loader, test_loader, task, old_logits=None):
         prog_bar.set_description(
             "Epoch: {}; Loss: {}; Clf loss: {}; Distill loss: {}".format(
                 epoch,
-                _loss / cx,
-                _clf_loss / cx,
-                _distil_loss / cx,
+                round(_loss / cx, 2),
+                round(_clf_loss / cx, 2),
+                round(_distil_loss / cx, 2),
             )
         )
 
