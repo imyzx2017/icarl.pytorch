@@ -44,7 +44,7 @@ def train_task(model, train_loader, task, old_logits=None):
     lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, get_scheduler(params.LR))
 
     for epoch in range(params.EPOCHS_PER_TASK):
-        print(f"Epoch {epoch}.")
+        print("Epoch {}.".format(epoch))
 
         lr_scheduler.step()
 

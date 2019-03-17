@@ -17,14 +17,8 @@ class Dataset(torch.utils.data.Dataset):
             ])
         )
 
+        self._targets = np.array(self._dataset.targets)
         self.set_classes_range(0, 10)
-
-
-    @property
-    def _targets(self):
-        return np.array(
-            self._dataset.train_labels if self._train else self._dataset.test_labels
-        )
 
     def set_classes_range(self, low_range, high_range):
         self._low_range = low_range
